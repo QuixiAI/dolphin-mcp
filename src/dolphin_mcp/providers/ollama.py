@@ -520,8 +520,8 @@ async def call_ollama_api(
 
     # Determine host and construct URL
     host = DEFAULT_API_HOST
-    if client and hasattr(client, 'host'):
-        host = client.host
+    if client and hasattr(client._client, 'base_url'):
+        host = client._client.base_url
     api_url = f"{host}/api/chat"
     logger.debug(f"Target API URL: {api_url}")
 
