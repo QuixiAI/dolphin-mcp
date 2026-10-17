@@ -1,5 +1,43 @@
 # examples
 
+## Parallel web search
+
+[Parallel Search MCP](https://docs.parallel.ai/integrations/mcp/search-mcp)
+provides web search and page fetching without a Parallel account or API key.
+Anonymous search uses Fast mode and is rate limited for light use.
+The [example configuration](parallel-search-mcp.json) uses
+[`mcp-remote`](https://github.com/geelen/mcp-remote) to bridge Dolphin's stdio
+client to the remote Streamable HTTP endpoint. The bridge honors `HTTP_PROXY`,
+`HTTPS_PROXY`, and `NO_PROXY` when set.
+
+Use Python 3.11+ and Node.js 22+ with `npm`/`npx` on your PATH. From the repository
+root, install Dolphin in your Python environment and cache the pinned bridge:
+
+```bash
+python -m pip install -e . lmstudio aiohttp
+npm exec --yes --package=mcp-remote@0.15.1 -- node --version
+```
+
+The extra Python packages are imported by Dolphin's existing providers. Caching
+the bridge first keeps its initial download outside Dolphin's 10-second server
+startup timeout.
+
+Choose a tool-capable model from `config.yml`. This command uses its `gpt-4o`
+entry and requires your OpenAI API key in `.env`; replace `--model gpt-4o` with
+your configured local model to use a local provider instead:
+
+```bash
+python -P -m dolphin_mcp.cli --config config.yml --mcp-config examples/parallel-search-mcp.json --model gpt-4o "Use parallel_web_search to find the official Python asyncio TaskGroup documentation, then parallel_web_fetch to read the relevant page. Summarize TaskGroup and cite the source URL."
+```
+
+Run the Python module as shown to invoke the asynchronous CLI. The `-P` flag
+keeps the root `dolphin_mcp.py` script from shadowing the installed package.
+Dolphin should
+report `[OK] parallel` and expose `parallel_web_search` and `parallel_web_fetch`
+to the model. Tool use depends on the selected model. This example selects only
+Parallel for this invocation; to keep other servers available, copy the
+`parallel` entry into your own `mcpServers` object alongside them.
+
 ## sqlite
 
 ```dolphin-mcp-cli --mcp-config examples/sqlite-mcp.json  --model dolphin "Explore the database, and choose one random row - and write a story about it"```

@@ -175,6 +175,9 @@ The project uses two main configuration files:
 
    You can add as many MCP servers as you need, and the client will connect to all of them and make their tools available.
 
+   For web search and page fetching without a Parallel API key, see the
+   [Parallel Search MCP example](examples/README.md#parallel-web-search).
+
 ## Usage
 
 ### Using the CLI Command
